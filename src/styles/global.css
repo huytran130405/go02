@@ -1,0 +1,11 @@
+/* global.css — shared component-level utilities */
+
+/* Card base (used by Card.jsx) */
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}

@@ -1,0 +1,345 @@
+/* ── Page layout ─────────────────────────────────────── */
+
+.pd-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.pd-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pd-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Not found ───────────────────────────────────────── */
+
+.pd-not-found {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* ── Back link ───────────────────────────────────────── */
+
+.pd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #64748b;
+  text-decoration: none;
+  margin-bottom: 4px;
+  transition: color 0.15s;
+}
+
+.pd-back:hover {
+  color: #0f172a;
+}
+
+.pd-back-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Post card ───────────────────────────────────────── */
+
+.pd-post-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.pd-post-body {
+  padding: 24px 24px 20px;
+}
+
+.pd-post-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+/* Author row */
+
+.pd-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pd-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.pd-avatar--lg {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+}
+
+.pd-author-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.pd-author-meta {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.pd-post-content {
+  font-size: 15px;
+  color: #334155;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Interaction bar */
+
+.pd-interaction-bar {
+  display: flex;
+  border-top: 1px solid #e2e8f0;
+  divide-x: 1px solid #e2e8f0;
+}
+
+.pd-action-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-right: 1px solid #e2e8f0;
+  cursor: pointer;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pd-action-btn:last-child {
+  border-right: none;
+}
+
+.pd-action-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.pd-action-btn--active {
+  color: #2563eb;
+}
+
+.pd-action-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Comments section ────────────────────────────────── */
+
+.pd-comments-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.pd-comments-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 24px 0;
+}
+
+.pd-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+}
+
+/* Individual comment */
+
+.pd-comment {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-left: 0;
+}
+
+/* Vertical connecting line */
+
+.pd-comment-line {
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: -24px;
+  width: 2px;
+  background: #cbd5e1;
+  z-index: 0;
+}
+
+.pd-comment-avatar-wrap {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.pd-comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pd-comment-body {
+  flex: 1;
+  padding-top: 2px;
+}
+
+.pd-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.pd-comment-author {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pd-comment-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pd-comment-text {
+  font-size: 14px;
+  color: #334155;
+  margin: 0 0 6px 0;
+  line-height: 1.6;
+}
+
+.pd-reply-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+
+.pd-reply-btn:hover {
+  color: #334155;
+}
+
+/* Add comment form wrapper */
+
+.pd-comment-form-wrap {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* ── Sidebar cards ───────────────────────────────────── */
+
+.pd-sidebar-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.pd-sidebar-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+}
+
+/* About author */
+
+.pd-sidebar-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pd-sidebar-author-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pd-sidebar-author-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+/* Recent posts */
+
+.pd-recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pd-recent-link {
+  font-size: 14px;
+  color: #334155;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.pd-recent-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: #2563eb;
+}
