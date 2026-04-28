@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../styles/login.css';
 
 // ============================================================
 // VALIDATION HELPERS
@@ -19,15 +21,15 @@ function validateForm(email, password) {
   const errors = {};
 
   if (!email.trim()) {
-    errors.email = 'Email không được để trống.';
+    errors.email = 'Email is required.';
   } else if (!isValidEmail(email)) {
-    errors.email = 'Email không đúng định dạng (ví dụ: user@example.com).';
+    errors.email = 'Invalid email format (e.g., user@example.com).';
   }
 
   if (!password) {
-    errors.password = 'Mật khẩu không được để trống.';
+    errors.password = 'Password is required.';
   } else if (password.length < 6) {
-    errors.password = 'Mật khẩu phải có ít nhất 6 ký tự.';
+    errors.password = 'Password must be at least 6 characters.';
   }
 
   return errors;
@@ -64,17 +66,16 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const ForumIcon = () => (
-  <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-    <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM7 11C6.45 11 6 10.55 6 10C6 9.45 6.45 9 7 9C7.55 9 8 9.45 8 10C8 10.55 7.55 11 7 11ZM12 11C11.45 11 11 10.55 11 10C11 9.45 11.45 9 12 9C12.55 9 13 9.45 13 10C13 10.55 12.55 11 12 11ZM17 11C16.45 11 16 10.55 16 10C16 9.45 16.45 9 17 9C17.55 9 18 9.45 18 10C18 10.55 17.55 11 17 11Z" />
-  </svg>
-);
+const ForumIcon = () => null; // không còn dùng, giữ lại để tránh lỗi nếu còn ref
+
 
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
 
-function Login({ onNavigate }) {
+function Login() {
+  const navigate = useNavigate();
+
   // --- State quản lý form inputs ---
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -110,12 +111,12 @@ function Login({ onNavigate }) {
       const result = await login(email, password);
       if (result.success) {
         // Đăng nhập thành công → điều hướng về trang chủ
-        if (onNavigate) onNavigate('home');
+        navigate('/');
       } else {
-        setApiError(result.error || 'Email hoặc mật khẩu không đúng. Vui lòng thử lại.');
+        setApiError(result.error || 'Invalid email or password. Please try again.');
       }
     } catch (err) {
-      setApiError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+      setApiError('An error occurred. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -125,11 +126,11 @@ function Login({ onNavigate }) {
   // Xử lý đăng nhập Google (Mô phỏng)
   // ----------------------------------------------------------------
   const handleGoogleLogin = async () => {
-    const googleEmail = prompt("Vui lòng nhập Email Google của bạn để đăng nhập:", "user.google@gmail.com");
+    const googleEmail = prompt("Please enter your Google Email to login:", "user.google@gmail.com");
 
     if (googleEmail) {
       if (!isValidEmail(googleEmail)) {
-        alert("Email không hợp lệ!");
+        alert("Invalid email!");
         return;
       }
 
@@ -137,9 +138,9 @@ function Login({ onNavigate }) {
       // Gọi hàm login từ context với mật khẩu giả lập
       const result = await login(googleEmail, "google-auth-pass");
       if (result.success) {
-        onNavigate?.('home');
+        navigate('/');
       } else {
-        setApiError("Đăng nhập Google thất bại.");
+        setApiError("Google login failed.");
       }
       setIsLoading(false);
     }
@@ -164,36 +165,36 @@ function Login({ onNavigate }) {
   // RENDER
   // ----------------------------------------------------------------
   return (
-    <div style={{ height: '100vh', width: '100%', display: 'flex', flexDirection: 'column', fontFamily: "'Inter', sans-serif", background: '#fff', overflow: 'hidden' }}>
+    <div className="login-page">
 
       {/* ===== HEADER / NAVBAR ===== */}
-      <header style={styles.header}>
-        <div style={styles.headerLeft}>
+      <header className="login-header">
+        <div className="login-header-left">
           {/* Logo */}
-          <a href="#" style={styles.logo} onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}>
-            <div style={styles.logoIcon}>
-              <ForumIcon />
+          <Link to="/" className="login-logo">
+            <div className="login-logo-icon">
+              <i className="fa-solid fa-f"></i>
             </div>
-            ForumHub
-          </a>
+            <h2 className="login-logo-text">ForumHub</h2>
+          </Link>
           {/* Nav Links */}
-          <nav style={styles.nav}>
-            <a href="#" style={styles.navLink} onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}>Home</a>
-            <a href="#" style={styles.navLink} onClick={(e) => { e.preventDefault(); onNavigate?.('create-post'); }}>Create Post</a>
+          <nav className="login-nav">
+            <Link to="/" className="login-nav-link">Home</Link>
+            <Link to="/create-post" className="login-nav-link">Create Post</Link>
           </nav>
         </div>
       </header>
 
       {/* ===== MAIN CONTENT ===== */}
-      <main style={styles.main}>
+      <main className="login-main">
 
         {/* LEFT: Minh họa + Welcome text */}
-        <section className="login-left-section" style={styles.leftSection}>
+        <section className="login-left-section">
           <div style={{ maxWidth: 400, textAlign: 'center', marginBottom: 32, zIndex: 1 }}>
-            <h1 style={{ fontSize: 36, fontWeight: 700, color: '#1f2937', marginBottom: 16 }}>
+            <h1 className="login-welcome-title">
               Welcome back!
             </h1>
-            <p style={{ fontSize: 17, color: '#6b7280', lineHeight: 1.6 }}>
+            <p className="login-welcome-sub">
               Login to your account to continue<br />joining the conversation.
             </p>
           </div>
@@ -202,22 +203,22 @@ function Login({ onNavigate }) {
             <img
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBArmkKDxSOuVqn34Z6i7je0a8-rTbK2Yx9OW64KjejKTndkQgd73il8WVvtcwgUuh4lpb-HKvI_v1wrR-nZWI-u8yxoqcG1XlEoRXsb4Zoj-ywz95d6E9jXvf1Zg6ihvBNyQIaQCAM43Yk3nlDOrWR-Vs9qxIr10yJw0wfSI3QYHbq-VPjGd7ChjupfcHtYquAvtfrOGpmjFoPLRPFc2H6xp3cwHTx6Cj74VT0vI6l9kP9tIRolA2ZvHM0yZnvJZOo_cnzRNxlhzm5"
               alt="Welcome Illustration"
-              style={{ width: '100%', borderRadius: 12, boxShadow: '0 20px 40px rgba(0,0,0,0.12)' }}
+              className="login-illustration"
               onError={(e) => { e.target.style.display = 'none'; }} // Ẩn nếu lỗi load ảnh
             />
           </div>
         </section>
 
         {/* RIGHT: Login Form */}
-        <section style={styles.rightSection}>
-          <div style={{ width: '100%', maxWidth: 420 }}>
-            <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1f2937', marginBottom: 32 }}>
+        <section className="login-right-section">
+          <div className="login-form-wrapper">
+            <h2 className="login-title">
               Login to your account
             </h2>
 
             {/* Hiển thị lỗi API */}
             {apiError && (
-              <div style={styles.apiErrorBox} role="alert">
+              <div className="login-api-error-box" role="alert">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -226,11 +227,11 @@ function Login({ onNavigate }) {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <form onSubmit={handleSubmit} noValidate className="login-field-group">
 
               {/* === Email Field === */}
               <div>
-                <label htmlFor="login-email" style={styles.label}>Email</label>
+                <label htmlFor="login-email" className="login-label">Email</label>
                 <input
                   id="login-email"
                   type="email"
@@ -239,15 +240,12 @@ function Login({ onNavigate }) {
                   placeholder="Enter your email"
                   value={email}
                   onChange={handleEmailChange}
-                  style={{
-                    ...styles.input,
-                    ...(errors.email ? styles.inputError : {}),
-                  }}
+                  className={`login-input${errors.email ? ' input-error' : ''}`}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   aria-invalid={!!errors.email}
                 />
                 {errors.email && (
-                  <p id="email-error" style={styles.errorText} role="alert">
+                  <p id="email-error" className="login-error-text" role="alert">
                     {errors.email}
                   </p>
                 )}
@@ -255,8 +253,8 @@ function Login({ onNavigate }) {
 
               {/* === Password Field === */}
               <div>
-                <label htmlFor="login-password" style={styles.label}>Password</label>
-                <div style={{ position: 'relative' }}>
+                <label htmlFor="login-password" className="login-label">Password</label>
+                <div className="login-password-wrapper">
                   <input
                     id="login-password"
                     type={showPassword ? 'text' : 'password'}
@@ -265,11 +263,7 @@ function Login({ onNavigate }) {
                     placeholder="Enter your password"
                     value={password}
                     onChange={handlePasswordChange}
-                    style={{
-                      ...styles.input,
-                      paddingRight: 44,
-                      ...(errors.password ? styles.inputError : {}),
-                    }}
+                    className={`login-input login-input-password${errors.password ? ' input-error' : ''}`}
                     aria-describedby={errors.password ? 'password-error' : undefined}
                     aria-invalid={!!errors.password}
                   />
@@ -277,32 +271,32 @@ function Login({ onNavigate }) {
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    style={styles.eyeBtn}
-                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    className="login-eye-btn"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeOpenIcon />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p id="password-error" style={styles.errorText} role="alert">
+                  <p id="password-error" className="login-error-text" role="alert">
                     {errors.password}
                   </p>
                 )}
               </div>
 
               {/* === Remember Me & Forgot Password === */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: '#374151' }}>
+              <div className="login-remember-row">
+                <label className="login-remember-label">
                   <input
                     id="remember-me"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    style={{ width: 16, height: 16, accentColor: '#1a73e8', cursor: 'pointer' }}
+                    className="login-remember-checkbox"
                   />
                   Remember me
                 </label>
-                <a href="#" style={{ fontSize: 14, color: '#1a73e8', textDecoration: 'none', fontWeight: 500 }}>
+                <a href="#" className="login-forgot-link">
                   Forgot password?
                 </a>
               </div>
@@ -311,16 +305,12 @@ function Login({ onNavigate }) {
               <button
                 type="submit"
                 disabled={isLoading}
-                style={{
-                  ...styles.submitBtn,
-                  opacity: isLoading ? 0.75 : 1,
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                }}
+                className="login-submit-btn"
               >
                 {isLoading ? (
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                    <span style={styles.spinner} />
-                    Đang đăng nhập...
+                  <span className="login-loading-row">
+                    <span className="login-spinner" />
+                    Logging in...
                   </span>
                 ) : 'Login'}
               </button>
@@ -328,16 +318,16 @@ function Login({ onNavigate }) {
             </form>
 
             {/* === Divider === */}
-            <div style={styles.divider}>
-              <div style={styles.dividerLine} />
-              <span style={styles.dividerText}>or</span>
-              <div style={styles.dividerLine} />
+            <div className="login-divider">
+              <div className="login-divider-line" />
+              <span className="login-divider-text">or</span>
+              <div className="login-divider-line" />
             </div>
 
             {/* === Google Login === */}
             <button
               type="button"
-              style={styles.googleBtn}
+              className="login-google-btn"
               onClick={handleGoogleLogin}
               disabled={isLoading}
             >
@@ -346,15 +336,11 @@ function Login({ onNavigate }) {
             </button>
 
             {/* === Sign Up Link === */}
-            <p style={{ marginTop: 32, textAlign: 'center', fontSize: 14, color: '#6b7280' }}>
+            <p className="login-signup-text">
               Don't have an account?{' '}
-              <a
-                href="#"
-                style={{ color: '#1a73e8', fontWeight: 600, textDecoration: 'none' }}
-                onClick={(e) => { e.preventDefault(); onNavigate?.('register'); }}
-              >
+              <Link to="/register" className="login-signup-link">
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </section>
@@ -362,239 +348,6 @@ function Login({ onNavigate }) {
       </main>
     </div>
   );
-}
-
-// ============================================================
-// STYLES (inline styles - không cần Tailwind/CSS module)
-// ============================================================
-const styles = {
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '16px 32px',
-    borderBottom: '1px solid #e5e7eb',
-    background: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-  },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 32,
-  },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    fontSize: 20,
-    fontWeight: 700,
-    color: '#1f2937',
-    textDecoration: 'none',
-  },
-  logoIcon: {
-    width: 32,
-    height: 32,
-    background: '#2563eb',
-    borderRadius: 6,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#fff',
-  },
-  nav: {
-    display: 'flex',
-    gap: 24,
-  },
-  navLink: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#374151',
-    textDecoration: 'none',
-  },
-  headerRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 16,
-  },
-  searchInput: {
-    padding: '8px 40px 8px 16px',
-    border: '1px solid #d1d5db',
-    borderRadius: 6,
-    fontSize: 14,
-    width: 240,
-    outline: 'none',
-  },
-  searchIcon: {
-    position: 'absolute',
-    right: 12,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: 18,
-    height: 18,
-    color: '#9ca3af',
-    pointerEvents: 'none',
-  },
-  loginBtn: {
-    padding: '8px 20px',
-    border: '1px solid #2563eb',
-    borderRadius: 6,
-    color: '#2563eb',
-    fontSize: 14,
-    fontWeight: 500,
-    textDecoration: 'none',
-    transition: 'background 0.15s',
-  },
-  main: {
-    display: 'flex',
-    flex: 1,              // Chiếm toàn bộ chiều cao còn lại
-    overflow: 'hidden',
-    minHeight: 0,         // Quan trọng: cho phép flex child co lại đúng cách
-  },
-  leftSection: {
-    flex: 1,
-    display: 'flex',
-    background: '#E6F0FF',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '48px',
-    position: 'relative',
-    overflow: 'hidden',
-    alignSelf: 'stretch', // Stretch chiều cao theo container
-  },
-  rightSection: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '48px 24px',
-    background: '#fff',
-    alignSelf: 'stretch', // Stretch chiều cao theo container
-    overflowY: 'auto',
-  },
-  label: {
-    display: 'block',
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#374151',
-    marginBottom: 4,
-  },
-  input: {
-    width: '100%',
-    padding: '12px 16px',
-    border: '1px solid #d1d5db',
-    borderRadius: 6,
-    fontSize: 14,
-    outline: 'none',
-    boxSizing: 'border-box',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
-    fontFamily: 'inherit',
-  },
-  inputError: {
-    borderColor: '#ef4444',
-    boxShadow: '0 0 0 3px rgba(239, 68, 68, 0.1)',
-  },
-  errorText: {
-    marginTop: 4,
-    fontSize: 13,
-    color: '#ef4444',
-  },
-  eyeBtn: {
-    position: 'absolute',
-    right: 12,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: '#9ca3af',
-    display: 'flex',
-    alignItems: 'center',
-    padding: 0,
-  },
-  submitBtn: {
-    width: '100%',
-    padding: '12px 16px',
-    background: '#1a73e8',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 6,
-    fontSize: 15,
-    fontWeight: 600,
-    transition: 'background 0.15s',
-    fontFamily: 'inherit',
-  },
-  apiErrorBox: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    padding: '12px 16px',
-    background: '#fef2f2',
-    border: '1px solid #fecaca',
-    borderRadius: 6,
-    fontSize: 14,
-    color: '#dc2626',
-    marginBottom: 16,
-  },
-  divider: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    margin: '24px 0',
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    background: '#e5e7eb',
-  },
-  dividerText: {
-    fontSize: 12,
-    color: '#9ca3af',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-  },
-  googleBtn: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    padding: '12px 16px',
-    background: '#fff',
-    border: '1px solid #d1d5db',
-    borderRadius: 6,
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#374151',
-    cursor: 'pointer',
-    transition: 'background 0.15s',
-    fontFamily: 'inherit',
-  },
-  spinner: {
-    width: 16,
-    height: 16,
-    border: '2px solid rgba(255,255,255,0.3)',
-    borderTopColor: '#fff',
-    borderRadius: '50%',
-    display: 'inline-block',
-    animation: 'spin 0.6s linear infinite',
-  },
-};
-
-// CSS cho spinner animation và reset
-if (typeof document !== 'undefined' && !document.getElementById('login-page-styles')) {
-  const s = document.createElement('style');
-  s.id = 'login-page-styles';
-  s.textContent = `
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .login-submit-btn:hover:not(:disabled) { background: #1557b0 !important; }
-    .login-google-btn:hover { background: #f9fafb !important; }
-    input:focus { border-color: #1a73e8 !important; box-shadow: 0 0 0 3px rgba(26,115,232,0.15) !important; }
-  `;
-  document.head.appendChild(s);
 }
 
 export default Login;

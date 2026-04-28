@@ -1,0 +1,465 @@
+/* ============================================================
+   createPost.css — Styles cho trang Create Post
+   ============================================================ */
+
+/* ===== NOT LOGGED IN WRAPPER (căn giữa card) ===== */
+.cp-not-logged-in-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 72px header + 80px container padding top/bottom */
+  min-height: calc(100vh - 72px - 80px);
+}
+
+/* Reset cơ bản */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== LAYOUT ===== */
+.create-post-page {
+  min-height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  background: #f6f7f9;
+  overflow: hidden;
+}
+
+/* ===== NAVBAR ===== */
+.cp-navbar {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.cp-navbar-inner {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+.cp-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.cp-logo-link {
+  text-decoration: none;
+}
+
+.cp-logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.cp-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.cp-nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: none;
+  padding-bottom: 2px;
+}
+
+.cp-nav-link:hover {
+  color: #111827;
+}
+
+.cp-nav-link.active {
+  color: #111827;
+  border-bottom: 3px solid #111827;
+  padding-bottom: 2px;
+}
+
+.cp-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cp-search-wrapper {
+  position: relative;
+}
+
+.cp-search-input {
+  padding: 6px 10px 6px 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 240px;
+  outline: none;
+  background: #fff;
+}
+
+.cp-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.cp-login-btn {
+  padding: 6px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.cp-login-btn:hover {
+  background: #f9fafb;
+}
+
+.cp-logout-btn {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.cp-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.cp-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ===== MAIN ===== */
+.create-post-main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 60px;
+}
+
+/* ===== CARD ===== */
+.create-post-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  max-width: 860px;
+  padding: 48px 56px;
+  margin-top: 8px;
+}
+
+.create-post-page-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+/* ===== FORM ===== */
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cp-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.cp-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  color: #111827;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cp-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.cp-input.input-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.cp-error-text {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #ef4444;
+}
+
+/* ===== EDITOR WRAPPER ===== */
+.cp-editor-wrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cp-editor-wrapper.editor-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* ===== TOOLBAR ===== */
+.cp-toolbar {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cp-toolbar-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s, color 0.1s;
+}
+
+.cp-toolbar-btn:hover {
+  background: #e5e7eb;
+  color: #111;
+}
+
+.cp-toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: #d1d5db;
+  margin: 0 4px;
+}
+
+/* ===== TEXTAREA ===== */
+.cp-textarea {
+  width: 100%;
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  color: #111827;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.6;
+  box-sizing: border-box;
+  min-height: 200px;
+}
+
+/* ===== SUBMIT AREA ===== */
+.cp-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.cp-publish-btn {
+  padding: 10px 40px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cp-publish-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.cp-publish-btn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* ===== SUCCESS / ERROR BOXES ===== */
+.cp-success-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #15803d;
+  margin-bottom: 20px;
+}
+
+.cp-api-error-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #dc2626;
+  margin-bottom: 20px;
+}
+
+/* ===== NOT LOGGED IN CARD ===== */
+.cp-not-logged-in-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.cp-not-logged-in-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cp-not-logged-in-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.cp-not-logged-in-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.cp-not-logged-in-desc {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.cp-login-redirect-btn {
+  padding: 12px 32px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.cp-login-redirect-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ===== SPINNER ===== */
+.cp-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.6s linear infinite;
+}
+
+.cp-loading-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .create-post-main {
+    padding: 24px 16px;
+  }
+  .create-post-card {
+    padding: 24px 20px;
+  }
+  .cp-navbar-inner {
+    padding: 0 16px;
+  }
+}

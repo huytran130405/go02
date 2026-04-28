@@ -7,6 +7,9 @@ import {
 
 import Home from "../pages/Home";
 import PostDetail from "../pages/PostDetail";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import CreatePost from "../pages/CreatePost";
 
 const AppRoutes = () => {
 
@@ -24,6 +27,24 @@ const AppRoutes = () => {
       <Route
         path="/post/:id"
         element={<PostDetail />}
+      />
+
+      {/* Login */}
+      <Route
+        path="/login"
+        element={<Login />}
+      />
+
+      {/* Register */}
+      <Route
+        path="/register"
+        element={<Register />}
+      />
+
+      {/* Create Post */}
+      <Route
+        path="/create-post"
+        element={<CreatePost />}
       />
 
     </Routes>
