@@ -116,10 +116,56 @@
   font-weight: 500;
   cursor: pointer;
   transition: background 0.18s ease;
+  text-decoration: none;
 }
 
 .login-btn:hover {
   background: #1d4ed8;
+  color: #fff;
+}
+
+/* ── Header user row (when logged in) ────────────────── */
+
+.header-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.header-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.header-logout-btn {
+  padding: 6px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.header-logout-btn:hover {
+  background: #f3f4f6;
 }
 
 /* ── Main container ──────────────────────────────────── */

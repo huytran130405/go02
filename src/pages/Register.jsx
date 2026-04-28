@@ -1,13 +1,12 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import '../styles/register.css';
 
 // ============================================================
 // ICONS
 // ============================================================
-const ForumIcon = () => (
-  <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-    <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM7 11C6.45 11 6 10.55 6 10S6.45 9 7 9 8 9.45 8 10 7.55 11 7 11ZM12 11C11.45 11 11 10.55 11 10S11.45 9 12 9 13 9.45 13 10 12.55 11 12 11ZM17 11C16.45 11 16 10.55 16 10S16.45 9 17 9 18 9.45 18 10 17.55 11 17 11Z" />
-  </svg>
-);
+// ForumIcon không còn dùng (thay bằng Font Awesome)
+
 
 const EyeOpenIcon = () => (
   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
@@ -39,7 +38,9 @@ const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
-function Register({ onNavigate }) {
+function Register() {
+  const navigate = useNavigate();
+
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,10 +56,10 @@ function Register({ onNavigate }) {
   // ----------------------------------------------------------------
   const getPasswordStrength = (pw) => {
     if (!pw) return null;
-    if (pw.length < 6) return { level: 'weak', label: 'Yếu', color: '#ef4444', width: '33%' };
+    if (pw.length < 6) return { level: 'weak', label: 'Weak', color: '#ef4444', width: '33%' };
     if (pw.length < 10 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw))
-      return { level: 'medium', label: 'Trung bình', color: '#f59e0b', width: '66%' };
-    return { level: 'strong', label: 'Mạnh', color: '#22c55e', width: '100%' };
+      return { level: 'medium', label: 'Medium', color: '#f59e0b', width: '66%' };
+    return { level: 'strong', label: 'Strong', color: '#22c55e', width: '100%' };
   };
   const strength = getPasswordStrength(password);
 
@@ -68,24 +69,24 @@ function Register({ onNavigate }) {
   const validate = () => {
     const errs = {};
     if (!userName.trim())
-      errs.userName = 'Tên người dùng không được để trống.';
+      errs.userName = 'Username is required.';
     else if (userName.trim().length < 3)
-      errs.userName = 'Tên người dùng cần ít nhất 3 ký tự.';
+      errs.userName = 'Username must be at least 3 characters.';
 
     if (!email.trim())
-      errs.email = 'Email không được để trống.';
+      errs.email = 'Email is required.';
     else if (!isValidEmail(email))
-      errs.email = 'Email không đúng định dạng (vd: name@email.com).';
+      errs.email = 'Invalid email format (e.g. name@email.com).';
 
     if (!password)
-      errs.password = 'Mật khẩu không được để trống.';
+      errs.password = 'Password is required.';
     else if (password.length < 6)
-      errs.password = 'Mật khẩu cần ít nhất 6 ký tự.';
+      errs.password = 'Password must be at least 6 characters.';
 
     if (!confirmPassword)
-      errs.confirmPassword = 'Vui lòng nhập lại mật khẩu.';
+      errs.confirmPassword = 'Please confirm your password.';
     else if (confirmPassword !== password)
-      errs.confirmPassword = 'Mật khẩu nhập lại không khớp.';
+      errs.confirmPassword = 'Passwords do not match.';
 
     return errs;
   };
@@ -111,109 +112,111 @@ function Register({ onNavigate }) {
     const exists = MOCK_USERS.find((u) => u.email.toLowerCase() === email.toLowerCase());
 
     if (exists) {
-      setErrors({ email: 'Email này đã được đăng ký. Vui lòng dùng email khác.' });
+      setErrors({ email: 'This email is already registered. Please use another email.' });
       setIsLoading(false);
       return;
     }
 
     setIsLoading(false);
-    setSuccessMsg(`Đăng ký thành công! Chào mừng ${userName} 🎉`);
+    setSuccessMsg(`Registration successful! Welcome, ${userName} 🎉`);
 
-    // Tự động chuyển sang Login sau 2 giây
-    setTimeout(() => onNavigate?.('login'), 2000);
+    // Auto redirect to Login after 2 seconds
+    setTimeout(() => navigate('/login'), 2000);
   };
 
   // ----------------------------------------------------------------
   // RENDER
   // ----------------------------------------------------------------
   return (
-    <div style={{ height: '100vh', width: '100%', display: 'flex', flexDirection: 'column', fontFamily: "'Inter', sans-serif", background: '#fff', overflow: 'hidden' }}>
+    <div className="register-page">
 
       {/* ===== HEADER ===== */}
-      <header style={styles.header}>
-        <div style={styles.headerLeft}>
-          <a href="#" style={styles.logo} onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}>
-            <div style={styles.logoIcon}><ForumIcon /></div>
-            ForumHub
-          </a>
-          <nav style={styles.nav}>
-            <a href="#" style={styles.navLink} onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}>Home</a>
-            <a href="#" style={styles.navLink} onClick={(e) => { e.preventDefault(); onNavigate?.('login'); }}>Login</a>
+      <header className="register-header">
+        <div className="register-header-left">
+          <Link to="/" className="register-logo">
+            <div className="register-logo-icon">
+              <i className="fa-solid fa-f"></i>
+            </div>
+            <h2 className="register-logo-text">ForumHub</h2>
+          </Link>
+          <nav className="register-nav">
+            <Link to="/" className="register-nav-link">Home</Link>
+            <Link to="/login" className="register-nav-link">Login</Link>
           </nav>
         </div>
       </header>
 
       {/* ===== MAIN: Split Layout ===== */}
-      <main style={styles.main}>
+      <main className="register-main">
 
         {/* LEFT: Illustration */}
-        <section style={styles.leftSection}>
+        <section className="register-left-section">
           <div style={{ maxWidth: 400, textAlign: 'center', marginBottom: 32 }}>
-            <h1 style={{ fontSize: 36, fontWeight: 700, color: '#1f2937', marginBottom: 16 }}>
+            <h1 className="register-left-title">
               Join us today!
             </h1>
-            <p style={{ fontSize: 17, color: '#6b7280', lineHeight: 1.6 }}>
-              Tạo tài khoản miễn phí và bắt đầu<br />chia sẻ kiến thức với cộng đồng.
+            <p className="register-left-sub">
+              Create a free account and start<br />sharing knowledge with the community.
             </p>
           </div>
           {/* Benefits list */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', maxWidth: 320 }}>
+          <div className="register-benefits-list">
             {[
-              'Đăng bài & chia sẻ kiến thức',
-              'Bình luận và tương tác cộng đồng',
-              'Nhận thông báo bài viết mới',
-              'Hồ sơ cá nhân với thống kê bài đăng',
+              'Post & share your knowledge',
+              'Comment and engage with the community',
+              'Get notified about new posts',
+              'Personal profile with post statistics',
             ].map((benefit, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(255,255,255,0.6)', borderRadius: 10, padding: '12px 16px' }}>
-                <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+              <div key={i} className="register-benefit-item">
+                <div className="register-benefit-icon">
                   <CheckIcon />
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 500, color: '#374151' }}>{benefit}</span>
+                <span className="register-benefit-text">{benefit}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* RIGHT: Register Form */}
-        <section style={styles.rightSection}>
-          <div style={{ width: '100%', maxWidth: 440 }}>
-            <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1f2937', marginBottom: 8 }}>
-              Tạo tài khoản mới
+        <section className="register-right-section">
+          <div className="register-form-wrapper">
+            <h2 className="register-title">
+              Create a new account
             </h2>
-            <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 32 }}>
-              Điền thông tin bên dưới để đăng ký
+            <p className="register-subtitle">
+              Fill in the details below to get started
             </p>
 
             {/* Thông báo thành công */}
             {successMsg && (
-              <div style={styles.successBox} role="status">
+              <div className="register-success-box" role="status">
                 <span style={{ fontSize: 18 }}>✅</span>
                 {successMsg}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <form onSubmit={handleSubmit} noValidate className="register-form">
 
               {/* === Username === */}
               <div>
-                <label htmlFor="reg-username" style={styles.label}>Tên người dùng</label>
+                <label htmlFor="reg-username" className="register-label">Username</label>
                 <input
                   id="reg-username"
                   type="text"
-                  placeholder="Nhập tên hiển thị của bạn"
+                  placeholder="Enter your display name"
                   value={userName}
                   onChange={(e) => {
                     setUserName(e.target.value);
                     if (errors.userName) setErrors((p) => ({ ...p, userName: undefined }));
                   }}
-                  style={{ ...styles.input, ...(errors.userName ? styles.inputError : {}) }}
+                  className={`register-input${errors.userName ? ' input-error' : ''}`}
                 />
-                {errors.userName && <p style={styles.errorText}>{errors.userName}</p>}
+                {errors.userName && <p className="register-error-text">{errors.userName}</p>}
               </div>
 
               {/* === Email === */}
               <div>
-                <label htmlFor="reg-email" style={styles.label}>Email</label>
+                <label htmlFor="reg-email" className="register-label">Email</label>
                 <input
                   id="reg-email"
                   type="email"
@@ -223,89 +226,85 @@ function Register({ onNavigate }) {
                     setEmail(e.target.value);
                     if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
                   }}
-                  style={{ ...styles.input, ...(errors.email ? styles.inputError : {}) }}
+                  className={`register-input${errors.email ? ' input-error' : ''}`}
                 />
-                {errors.email && <p style={styles.errorText}>{errors.email}</p>}
+                {errors.email && <p className="register-error-text">{errors.email}</p>}
               </div>
 
               {/* === Password === */}
               <div>
-                <label htmlFor="reg-password" style={styles.label}>Mật khẩu</label>
-                <div style={{ position: 'relative' }}>
+                <label htmlFor="reg-password" className="register-label">Password</label>
+                <div className="register-password-wrapper">
                   <input
                     id="reg-password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Ít nhất 6 ký tự"
+                    placeholder="At least 6 characters"
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (errors.password) setErrors((p) => ({ ...p, password: undefined }));
                     }}
-                    style={{ ...styles.input, paddingRight: 44, ...(errors.password ? styles.inputError : {}) }}
+                    className={`register-input register-input-password${errors.password ? ' input-error' : ''}`}
                   />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="register-eye-btn">
                     {showPassword ? <EyeOffIcon /> : <EyeOpenIcon />}
                   </button>
                 </div>
                 {/* Password strength bar */}
                 {strength && (
                   <div style={{ marginTop: 6 }}>
-                    <div style={{ height: 4, background: '#e5e7eb', borderRadius: 4, overflow: 'hidden' }}>
-                      <div style={{ width: strength.width, height: '100%', background: strength.color, borderRadius: 4, transition: 'width 0.3s, background 0.3s' }} />
+                    <div className="register-strength-bar-bg">
+                      <div className="register-strength-bar-fill" style={{ width: strength.width, background: strength.color }} />
                     </div>
-                    <p style={{ fontSize: 11, color: strength.color, marginTop: 3, fontWeight: 600 }}>
-                      Độ mạnh: {strength.label}
+                    <p className="register-strength-label" style={{ color: strength.color }}>
+                      Strength: {strength.label}
                     </p>
                   </div>
                 )}
-                {errors.password && <p style={styles.errorText}>{errors.password}</p>}
+                {errors.password && <p className="register-error-text">{errors.password}</p>}
               </div>
 
               {/* === Confirm Password === */}
               <div>
-                <label htmlFor="reg-confirm" style={styles.label}>Nhập lại mật khẩu</label>
-                <div style={{ position: 'relative' }}>
+                <label htmlFor="reg-confirm" className="register-label">Confirm Password</label>
+                <div className="register-password-wrapper">
                   <input
                     id="reg-confirm"
                     type={showConfirm ? 'text' : 'password'}
-                    placeholder="Nhập lại mật khẩu bên trên"
+                    placeholder="Re-enter your password"
                     value={confirmPassword}
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
                       if (errors.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: undefined }));
                     }}
-                    style={{ ...styles.input, paddingRight: 44, ...(errors.confirmPassword ? styles.inputError : {}) }}
+                    className={`register-input register-input-password${errors.confirmPassword ? ' input-error' : ''}`}
                   />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} style={styles.eyeBtn}>
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="register-eye-btn">
                     {showConfirm ? <EyeOffIcon /> : <EyeOpenIcon />}
                   </button>
                 </div>
-                {errors.confirmPassword && <p style={styles.errorText}>{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="register-error-text">{errors.confirmPassword}</p>}
               </div>
 
               {/* === Submit === */}
               <button
                 type="submit"
                 disabled={isLoading || !!successMsg}
-                style={{ ...styles.submitBtn, opacity: (isLoading || !!successMsg) ? 0.75 : 1, cursor: (isLoading || !!successMsg) ? 'not-allowed' : 'pointer', marginTop: 6 }}
+                className="register-submit-btn"
               >
                 {isLoading ? (
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                    <span style={styles.spinner} /> Đang đăng ký...
+                  <span className="register-loading-row">
+                    <span className="register-spinner" /> Creating account...
                   </span>
-                ) : 'Tạo tài khoản'}
+                ) : 'Create account'}
               </button>
             </form>
 
-            <p style={{ marginTop: 28, textAlign: 'center', fontSize: 14, color: '#6b7280' }}>
-              Đã có tài khoản?{' '}
-              <a
-                href="#"
-                style={{ color: '#1a73e8', fontWeight: 600, textDecoration: 'none' }}
-                onClick={(e) => { e.preventDefault(); onNavigate?.('login'); }}
-              >
-                Đăng nhập ngay
-              </a>
+            <p className="register-signin-text">
+              Already have an account?{' '}
+              <Link to="/login" className="register-signin-link">
+                Sign in
+              </Link>
             </p>
           </div>
         </section>
@@ -313,99 +312,6 @@ function Register({ onNavigate }) {
       </main>
     </div>
   );
-}
-
-// ============================================================
-// STYLES — nhất quán với Login.jsx
-// ============================================================
-const styles = {
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '16px 32px',
-    borderBottom: '1px solid #e5e7eb',
-    background: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    flexShrink: 0,
-  },
-  headerLeft: { display: 'flex', alignItems: 'center', gap: 32 },
-  logo: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 20, fontWeight: 700, color: '#1f2937', textDecoration: 'none' },
-  logoIcon: { width: 32, height: 32, background: '#2563eb', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' },
-  nav: { display: 'flex', gap: 24 },
-  navLink: { fontSize: 14, fontWeight: 500, color: '#374151', textDecoration: 'none' },
-
-  main: {
-    display: 'flex',
-    flex: 1,
-    overflow: 'hidden',
-    minHeight: 0,
-  },
-  leftSection: {
-    flex: 1,
-    display: 'flex',
-    background: '#EEF4FF',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '48px',
-    alignSelf: 'stretch',
-    overflow: 'hidden',
-  },
-  rightSection: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '32px 24px',
-    background: '#fff',
-    alignSelf: 'stretch',
-    overflowY: 'auto',
-  },
-
-  label: { display: 'block', fontSize: 14, fontWeight: 500, color: '#374151', marginBottom: 4 },
-  input: {
-    width: '100%', padding: '12px 16px', border: '1px solid #d1d5db', borderRadius: 6,
-    fontSize: 14, outline: 'none', boxSizing: 'border-box',
-    transition: 'border-color 0.15s, box-shadow 0.15s', fontFamily: 'inherit',
-  },
-  inputError: { borderColor: '#ef4444', boxShadow: '0 0 0 3px rgba(239,68,68,0.1)' },
-  errorText: { marginTop: 4, fontSize: 13, color: '#ef4444' },
-  eyeBtn: {
-    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-    background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af',
-    display: 'flex', alignItems: 'center', padding: 0,
-  },
-  submitBtn: {
-    width: '100%', padding: '12px 16px', background: '#1a73e8', color: '#fff',
-    border: 'none', borderRadius: 6, fontSize: 15, fontWeight: 600,
-    transition: 'background 0.15s', fontFamily: 'inherit',
-  },
-  successBox: {
-    display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px',
-    background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8,
-    fontSize: 14, color: '#15803d', marginBottom: 20, fontWeight: 500,
-  },
-  spinner: {
-    width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)',
-    borderTopColor: '#fff', borderRadius: '50%',
-    display: 'inline-block', animation: 'spin 0.6s linear infinite',
-  },
-};
-
-// Inject CSS animation
-if (typeof document !== 'undefined' && !document.getElementById('register-page-styles')) {
-  const s = document.createElement('style');
-  s.id = 'register-page-styles';
-  s.textContent = `
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #reg-username:focus, #reg-email:focus, #reg-password:focus, #reg-confirm:focus {
-      border-color: #1a73e8 !important;
-      box-shadow: 0 0 0 3px rgba(26,115,232,0.15) !important;
-    }
-  `;
-  document.head.appendChild(s);
 }
 
 export default Register;

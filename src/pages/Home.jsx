@@ -18,7 +18,7 @@ const Home = () => {
       {/* Page Header Row */}
       <div className="home-header">
         <h1 className="home-title">All Posts</h1>
-        <Link to="/create" className="create-btn">
+        <Link to="/create-post" className="create-btn">
           <span className="create-btn-icon">+</span>
           Create Post
         </Link>
@@ -29,7 +29,6 @@ const Home = () => {
 
         {posts.map((post, index) => {
 
-          /* find the matching user */
           const user = users.find((u) => u.userId === post.userId);
           const userName = user ? user.userName : `User ${post.userId}`;
           const avatarLetter = user ? user.avatar : userName.charAt(0).toUpperCase();
@@ -58,11 +57,11 @@ const Home = () => {
                 <div className="post-meta">
                   <span className="meta-author">{userName}</span>
                   <span className="meta-dot">•</span>
-                  <span>{post.timeStamp}</span>
+                  <span>{post.timeStamps}</span>
                   <span className="meta-dot">•</span>
                   <span className="meta-comments">
                     <i className="fa-regular fa-comment"></i>
-                    {post.comments} comments
+                    {post.stats?.comments || 0} comments
                   </span>
                 </div>
 

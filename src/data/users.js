@@ -29,38 +29,28 @@ export const users = [
 
 ];
 
+// Alias dùng cho Register.jsx
+export const MOCK_USERS = users;
 
-export const MOCK_USERS = [
-  {
-    userId: 'u001',
-    userName: 'Nguyen Van A',
-    email: 'admin@forumhub.com',
-    password: '123456',          // plaintext chỉ cho mock, KHÔNG dùng ở production
-    avatar: 'A',
-    numberOfPost: 12,
-  },
-  {
-    userId: 'u002',
-    userName: 'Tran Thi B',
-    email: 'user@forumhub.com',
-    password: 'password123',
-    avatar: 'T',
-    numberOfPost: 5,
-  },
-  {
-    userId: 'u003',
-    userName: 'Le Van C',
-    email: 'lec@example.com',
-    password: 'levanc@2024',
-    avatar: 'L',
-    numberOfPost: 27,
-  },
-  {
-    userId: 'u004',
-    userName: 'Google User',
-    email: 'user.google@gmail.com',
-    password: 'google-auth-pass', // Dùng cho nút Login with Google (giả lập)
-    avatar: 'G',
-    numberOfPost: 0,
-  },
-];
+/**
+ * Xác thực email + password dựa trên mock data.
+ * Khi tích hợp backend thật: thay hàm này bằng fetch/axios.
+ * @param {string} email
+ * @param {string} password
+ * @returns {{ success: boolean, user?: object, error?: string }}
+ */
+export function mockAuthLogin(email, password) {
+  const found = users.find(
+    (u) =>
+      u.email.toLowerCase() === email.toLowerCase() &&
+      u.password === password
+  );
+
+  if (found) {
+    // Không trả về password ra ngoài
+    const { password: _, ...safeUser } = found;
+    return { success: true, user: { ...safeUser, name: safeUser.userName } };
+  }
+
+  return { success: false, error: 'Email hoặc mật khẩu không đúng.' };
+}

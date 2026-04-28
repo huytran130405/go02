@@ -16,6 +16,81 @@ const AVATAR_COLORS = ["#61A87D", "#8C72CB", "#E69B4B", "#E86C97", "#3b82f6", "#
 const getAvatarColor = (userId) =>
   AVATAR_COLORS[(userId - 1) % AVATAR_COLORS.length];
 
+// =================================================================
+// RECURSIVE COMMENT COMPONENT
+// =================================================================
+const CommentThread = ({ comment, allComments, replyingTo, setReplyingTo, onAddComment }) => {
+  const user = users.find((u) => u.userId === comment.userId);
+  const displayName = user ? user.userName : `User ${comment.userId}`;
+  const avatarLetter = user ? user.avatar : displayName.charAt(0).toUpperCase();
+
+  // Tìm các replies của comment hiện tại
+  const replies = allComments.filter((c) => c.parentId === comment.commentId);
+
+  return (
+    <div className="pd-comment-thread">
+      <div className="pd-comment">
+        {/* Vertical connecting line (only if there are replies, handled by CSS usually, but we keep it simple here) */}
+        <div className="pd-comment-line" />
+
+        {/* Avatar */}
+        <div className="pd-comment-avatar-wrap">
+          <div
+            className="pd-comment-avatar"
+            style={{ backgroundColor: getAvatarColor(comment.userId) }}
+          >
+            {avatarLetter}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="pd-comment-body">
+          <div className="pd-comment-header">
+            <span className="pd-comment-author">{displayName}</span>
+            <span className="pd-comment-time">· {comment.createdAt}</span>
+          </div>
+          <p className="pd-comment-text">{comment.content}</p>
+          
+          <button 
+            className="pd-reply-btn"
+            onClick={() => setReplyingTo(replyingTo === comment.commentId ? null : comment.commentId)}
+          >
+            {replyingTo === comment.commentId ? "Cancel" : "Reply"}
+          </button>
+
+          {/* Form Reply hiển thị ngay dưới comment đang được chọn */}
+          {replyingTo === comment.commentId && (
+            <div className="pd-nested-reply-form">
+              <CommentForm 
+                onAddComment={(text) => onAddComment(text, comment.commentId)} 
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Đệ quy: render các replies lồng vào bên trong */}
+      {replies.length > 0 && (
+        <div className="pd-comment-replies">
+          {replies.map((reply) => (
+            <CommentThread
+              key={reply.commentId}
+              comment={reply}
+              allComments={allComments}
+              replyingTo={replyingTo}
+              setReplyingTo={setReplyingTo}
+              onAddComment={onAddComment}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// =================================================================
+// MAIN COMPONENT
+// =================================================================
 const PostDetail = () => {
   const { id } = useParams();
 
@@ -33,20 +108,26 @@ const PostDetail = () => {
   const postComments = mockComments.filter((c) => c.postId === post.postId);
 
   const [comments, setComments] = useState(postComments);
-  const [likes, setLikes] = useState(14);
+  const [likes, setLikes] = useState(post.stats?.likes || 0);
   const [liked, setLiked] = useState(false);
+  const [replyingTo, setReplyingTo] = useState(null);
 
-  const handleAddComment = (text) => {
+  // Lọc ra những bình luận gốc (không phải reply)
+  const rootComments = comments.filter((c) => !c.parentId);
+
+  const handleAddComment = (text, parentId = null) => {
     setComments([
       ...comments,
       {
         commentId: Date.now(),
         postId: post.postId,
-        userId: 1,
+        userId: 1, // Giả sử user ID 1 đang đăng nhập
+        parentId: parentId,
         content: text,
         createdAt: "Just now",
       },
     ]);
+    setReplyingTo(null); // Tắt form reply sau khi submit
   };
 
   const handleLike = () => {
@@ -85,7 +166,7 @@ const PostDetail = () => {
                 </div>
                 <div>
                   <div className="pd-author-name">{author?.userName}</div>
-                  <div className="pd-author-meta">{post.timeStamp} · 256 views</div>
+                  <div className="pd-author-meta">{post.timeStamps} · {post.stats?.views || 0} views</div>
                 </div>
               </div>
 
@@ -118,44 +199,22 @@ const PostDetail = () => {
             <h2 className="pd-comments-title">Comments ({comments.length})</h2>
 
             <div className="pd-comments-list">
-              {comments.map((c, idx) => {
-                const user = users.find((u) => u.userId === c.userId);
-                const displayName = user ? user.userName : `User ${c.userId}`;
-                const avatarLetter = user ? user.avatar : displayName.charAt(0);
-                const isLast = idx === comments.length - 1;
-
-                return (
-                  <div className="pd-comment" key={c.commentId}>
-                    {/* Vertical connecting line (not on last) */}
-                    {!isLast && <div className="pd-comment-line" />}
-
-                    {/* Avatar */}
-                    <div className="pd-comment-avatar-wrap">
-                      <div
-                        className="pd-comment-avatar"
-                        style={{ backgroundColor: getAvatarColor(c.userId) }}
-                      >
-                        {avatarLetter}
-                      </div>
-                    </div>
-
-                    {/* Body */}
-                    <div className="pd-comment-body">
-                      <div className="pd-comment-header">
-                        <span className="pd-comment-author">{displayName}</span>
-                        <span className="pd-comment-time">· {c.createdAt}</span>
-                      </div>
-                      <p className="pd-comment-text">{c.content}</p>
-                      <button className="pd-reply-btn">Reply</button>
-                    </div>
-                  </div>
-                );
-              })}
+              {rootComments.map((c) => (
+                <CommentThread
+                  key={c.commentId}
+                  comment={c}
+                  allComments={comments}
+                  replyingTo={replyingTo}
+                  setReplyingTo={setReplyingTo}
+                  onAddComment={handleAddComment}
+                />
+              ))}
             </div>
 
-            {/* Add Comment Form */}
-            <div className="pd-comment-form-wrap">
-              <CommentForm onAddComment={handleAddComment} />
+            {/* Add Comment Form (Root) */}
+            <div className="pd-comment-form-wrap" style={{ marginTop: 24, borderTop: "1px solid #f0f0f0", paddingTop: 24 }}>
+              <h3>Write a comment</h3>
+              <CommentForm onAddComment={(text) => handleAddComment(text, null)} />
             </div>
           </section>
 
