@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
@@ -6,12 +6,38 @@ import MainLayout from "../layouts/MainLayout";
 import { posts } from "../data/posts";
 import { users } from "../data/users";
 
+
+
 import "../styles/home.css";
+import postService from "../services/postService";
 
 /* Avatar background colors cycling through the palette */
 const AVATAR_COLORS = ["#61A87D", "#8C72CB", "#E69B4B", "#E86C97", "#3b82f6"];
 
 const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        setIsLoading(true);
+        const data = await postService.getAllPosts();
+        setPosts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  if (isLoading) return <MainLayout><div className="loading">Đang tải bài viết từ hệ thống...</div></MainLayout>;
+  if (error) return <MainLayout><div className="error-box">Lỗi: {error}</div></MainLayout>;
+
   return (
     <MainLayout>
 
@@ -30,12 +56,14 @@ const Home = () => {
         {posts.map((post, index) => {
 
           const user = users.find((u) => u.userId === post.userId);
-          const userName = user ? user.userName : `User ${post.userId}`;
-          const avatarLetter = user ? user.avatar : userName.charAt(0).toUpperCase();
+          const userName = post.authorName || `User ${post.userId || 'Guest'}`;
+          const avatarLetter = userName.charAt(0).toUpperCase();
           const avatarColor = AVATAR_COLORS[index % AVATAR_COLORS.length];
 
+          const currentId = post.id || post.postId;
+
           return (
-            <article className="post-item" key={post.postId}>
+            <article className="post-item" key={currentId}>
 
               {/* Avatar */}
               <div

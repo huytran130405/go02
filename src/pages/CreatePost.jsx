@@ -2,7 +2,10 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import MainLayout from '../layouts/MainLayout';
+import postService from '../services/postService';
 import '../styles/createPost.css';
+
+import { users } from "../data/users";
 
 // ============================================================
 // TOOLBAR BUTTON component
@@ -25,7 +28,7 @@ function ToolbarButton({ title, onClick, children }) {
 // ============================================================
 function CreatePost() {
   const navigate = useNavigate();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   // --- Form state ---
   const [title, setTitle] = useState('');
@@ -44,8 +47,6 @@ function CreatePost() {
     const newErrors = {};
     if (!title.trim()) {
       newErrors.title = 'Title is required.';
-    } else if (title.trim().length < 5) {
-      newErrors.title = 'Title must be at least 5 characters.';
     }
     if (!content.trim()) {
       newErrors.content = 'Content is required.';
@@ -71,15 +72,22 @@ function CreatePost() {
 
     setIsSubmitting(true);
     try {
-      // Mô phỏng gọi API tạo post
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const mockUser = users.find(u => u.userName === "Nghia") || users[0];
+      const createdPost = await postService.createPost({
+        user_id: mockUser.userId,
+        title: title.trim(),
+        content: content.trim(),
+      });
 
-      // Thành công
-      setSuccessMsg(`Post "${title}" has been published successfully!`);
+      setSuccessMsg(`Post "${createdPost.title}" has been published successfully!`);
+      const targetId = createdPost.id || createdPost.postId;
       setTitle('');
       setContent('');
+      setTimeout(() => {
+        navigate(`/post/${targetId}`);
+      }, 800);
     } catch (err) {
-      setErrors({ api: 'An error occurred while publishing. Please try again.' });
+      setErrors({ api: err.message || 'An error occurred while publishing. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }

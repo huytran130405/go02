@@ -16,9 +16,6 @@ const AVATAR_COLORS = ["#61A87D", "#8C72CB", "#E69B4B", "#E86C97", "#3b82f6", "#
 const getAvatarColor = (userId) =>
   AVATAR_COLORS[(userId - 1) % AVATAR_COLORS.length];
 
-// =================================================================
-// RECURSIVE COMMENT COMPONENT
-// =================================================================
 const CommentThread = ({ comment, allComments, replyingTo, setReplyingTo, onAddComment }) => {
   const user = users.find((u) => u.userId === comment.userId);
   const displayName = user ? user.userName : `User ${comment.userId}`;
