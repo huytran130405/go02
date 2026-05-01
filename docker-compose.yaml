@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
   forum-web:
+    image: lehaiau/forum-react-web:v1
     build:
       context: .
       args:
@@ -15,4 +14,5 @@ services:
 
 networks:
   forum-network:
+    name: forum-network
     driver: bridge
