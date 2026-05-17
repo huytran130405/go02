@@ -25,7 +25,7 @@ const AppRoutes = () => {
 
       {/* Post Detail */}
       <Route
-        path="/post/:id"
+        path="/posts/:id"
         element={<PostDetail />}
       />
 

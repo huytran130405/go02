@@ -25,6 +25,15 @@ const postService = {
             const message = error.response?.data?.error;
             throw new Error(message);
         }
+    },
+    findPostById: async (postId) => {
+        try {
+            const response = await axios.get(`${API_URL}/posts/${postId}`);
+            return response.data;
+        } catch (error) {
+            const message = error.response?.data?.error || error.message;
+            throw new Error(message);
+        }
     }
 };
 
